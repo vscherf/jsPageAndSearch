@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 //written by vs
 //benötigt html5, jQuery, optional: Bootstrap, jQueryUI
 
@@ -15,7 +15,7 @@
 //Standardmäßig muss nur der Tabellenname übergeben werden: 
 //fnPageAndSearch([
 //    { tableName: "#myTable" }
-//]
+//])
 
 
 var table
@@ -208,7 +208,8 @@ var fnPageAndSearch = (function PageAndSearch(properties)
             {
                 for (var b = 1; b <= 4; b++)
                 {
-                    btn = new $("<button>");
+                    btn = new $("<input>");
+                    btn.prop("type", "button");
                     var title = "";
                     if (bs)
                     {
@@ -218,22 +219,22 @@ var fnPageAndSearch = (function PageAndSearch(properties)
                     switch (b)
                     {
                         case 1:
-                            $(btn).html("&laquo;");
+                            $(btn).val("«");
                             $(btn).data("position", "first");
                             title = "erste Seite";
                             break;
                         case 2:
-                            $(btn).html("&lsaquo;");
+                            $(btn).val("‹");
                             $(btn).data("position", "prev");
                             title = "eine Seite zurück";
                             break;
                         case 3:
-                            $(btn).html("&rsaquo;");
+                            $(btn).val("›");
                             $(btn).data("position", "next");
                             title = "eine Seite vor";
                             break;
                         case 4:
-                            $(btn).html("&raquo;");
+                            $(btn).val("»");
                             $(btn).data("position", "last");
                             title = "letzte Seite";
                             break;
@@ -308,8 +309,9 @@ var fnPageAndSearch = (function PageAndSearch(properties)
             {
                 for (var p = 0; p < pageCount; p++)
                 {
-                    btn = new $("<button>");
-                    btn.html(parseInt(p) + 1);
+                    btn = new $("<input>");
+                    btn.prop("type", "button");
+                    btn.val(parseInt(p) + 1);
                     var classlist = "";
                     if (fnGetProp(prop, "withBootstrap"))
                     {
@@ -334,7 +336,7 @@ var fnPageAndSearch = (function PageAndSearch(properties)
                 };
             };
 
-            btn = $(pagingElement).children("button:first-child");
+            btn = $(pagingElement).children("input[type=button]:first-child");
             fnPageTable(startPage, btn);
         }
     }
