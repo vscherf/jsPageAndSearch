@@ -1,4 +1,4 @@
-﻿/*#region Font */
+/*#region Font */
 /* Dieser Bereich kann entfernt werden, wenn die Seite bereits über andere Parameter/CSS gestylt wird */
 @font-face {
     font-family: 'Lato';
@@ -24,7 +24,7 @@ body {
 
 /*das Eingabefeld für den Filter*/
 .tblPageAndSearch-searchfield {
-    background-image: url(../pics/search.png);
+    background-image: url("/pics/search.png");
     background-position: 5px 6px;
     background-repeat: no-repeat;
     width: 100%;
@@ -48,7 +48,7 @@ body {
 }
 
     /*die Page-Buttons*/
-    .tblPageAndSearch-pagediv button {
+    .tblPageAndSearch-pagediv input[type=button] {
         padding: 8px 15px 8px 15px;
         background-color: #f0f0f0;
         color: #333;
@@ -60,23 +60,23 @@ body {
         cursor: pointer;
     }
 
-        .tblPageAndSearch-pagediv button:hover {
+        .tblPageAndSearch-pagediv input[type=button]:hover {
             background-color: #fff;
         }
 
-        .tblPageAndSearch-pagediv button:active {
+        .tblPageAndSearch-pagediv input[type=button]:active {
             background-color: #999;
         }
 
         /*die letzte Schaltfläche*/
-        .tblPageAndSearch-pagediv button:last-child {
+        .tblPageAndSearch-pagediv input[type=button]:last-child {
             border-right: 1px solid #aaa;
             border-bottom-right-radius: 3px;
             border-top-right-radius: 3px;
         }
 
         /*die erste Schaltfläche*/
-        .tblPageAndSearch-pagediv button:first-child {
+        .tblPageAndSearch-pagediv input[type=button]:first-child {
             border-bottom-left-radius: 3px;
             border-top-left-radius: 3px;
         }
@@ -184,7 +184,7 @@ body {
         background-color: rgba(30, 105, 200, 0.80);
         color: #eee;
         font-weight: 700;
-        text-align:left;
+        text-align: left;
     }
 
     /*alle geraden Zeilen*/
@@ -223,7 +223,7 @@ body {
     background-color: #fafafa;
 }
 
-/*Korrektur für das Eingabefeld des Filters*/
+    /*Korrektur für das Eingabefeld des Filters*/
     .tblPageAndSearch-tr > td {
         padding-right: 40px !important;
     }
