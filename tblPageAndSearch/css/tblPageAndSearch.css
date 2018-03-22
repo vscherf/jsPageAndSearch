@@ -104,7 +104,7 @@ body {
     }
 
         .tblPageAndSearch-pagediv + label + input + label {
-            position: absolute;
+            display: inherit;
         }
 /*+++++*/
 
@@ -140,7 +140,7 @@ body {
     }
 
         .tblPageAndSearch-pagediv-bs + label + input + label {
-            position: absolute;
+            display: inherit;
         }
 
 /*+++++*/
