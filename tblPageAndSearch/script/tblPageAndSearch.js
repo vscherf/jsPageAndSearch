@@ -473,8 +473,8 @@ function fnPageTable(pos, sender)
 
 function fnSearchTable(sender, output)
 {
-    var myTable = fnGetProp(prop, "tableName");
-    var columns = fnGetProp(prop, "searchInCols");
+    var myTable = $(sender).closest("table")
+    var columns = $(myTable).data("search-cols")
     var cl = fnGetProp(prop, "matchClass");
     var filter = $(sender).val().toUpperCase();
     var rows = $(myTable).children("tbody").children("tr");
