@@ -358,6 +358,8 @@ var fnPageAndSearch = (function PageAndSearch(properties)
         {
             $(location).children("tr:first-child").before(tr)
         };
+        var scols = fnGetProp(prop, "searchInCols");
+        $(table).data("search-cols", scols);
         location = $(table).children("thead");
         td.attr("colspan", cols);
         tr.addClass("tblPageAndSearch-tr");
@@ -523,7 +525,7 @@ function fnSearchTable(sender, output)
 
         if (output)
         {
-            $(output).html("Treffer in " + intCounter + " von " + rows.length + " Zeilen");
+            $(output).html("Treffer in: " + intCounter + " von " + $(rows).children("td").length + " Feldern");
         };
 
         if (match)
@@ -534,7 +536,7 @@ function fnSearchTable(sender, output)
             rows[i].style.display = "none";
         };
 
-        if (filter - length === 0)
+        if (filter.length === 0)
         {
             $(rows).children("td").removeClass(cl);
             $(output).empty();
