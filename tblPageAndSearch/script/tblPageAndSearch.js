@@ -47,7 +47,7 @@ var DEFAULTS =
         },
         {
             searchPlaceholder:          //der Placeholder-Text für das Suchfeld | Standard:  "type text to search in table"
-                "Text eingeben zum filtern"
+                "type text to search in table"
         }
     ]
 
@@ -358,8 +358,6 @@ var fnPageAndSearch = (function PageAndSearch(properties)
         {
             $(location).children("tr:first-child").before(tr)
         };
-        var scols = fnGetProp(prop, "searchInCols");
-        $(table).prop("data-search-cols", scols);
         location = $(table).children("thead");
         td.attr("colspan", cols);
         tr.addClass("tblPageAndSearch-tr");
@@ -475,8 +473,8 @@ function fnPageTable(pos, sender)
 
 function fnSearchTable(sender, output)
 {
-    var myTable = $(sender).closest("table")
-    var columns = $(myTable).prop("data-search-cols")
+    var myTable = fnGetProp(prop, "tableName");
+    var columns = fnGetProp(prop, "searchInCols");
     var cl = fnGetProp(prop, "matchClass");
     var filter = $(sender).val().toUpperCase();
     var rows = $(myTable).children("tbody").children("tr");
@@ -525,7 +523,7 @@ function fnSearchTable(sender, output)
 
         if (output)
         {
-            $(output).html("Treffer: " + intCounter);
+            $(output).html("Treffer in " + intCounter + " von " + rows.length + " Zeilen");
         };
 
         if (match)
