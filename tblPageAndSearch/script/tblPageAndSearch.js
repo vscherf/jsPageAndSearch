@@ -48,7 +48,7 @@ var DEFAULTS =
         },
         {
             searchPlaceholder:          //der Placeholder-Text für das Suchfeld | Standard:  "type text to search in table"
-                "type text to search in table"
+                "enter text to search in table"
         }
     ]
 
