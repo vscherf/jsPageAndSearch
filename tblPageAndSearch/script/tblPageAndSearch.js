@@ -1,5 +1,6 @@
 "use strict";
 //written by vs
+//V1.0
 //benötigt html5, jQuery, optional: Bootstrap, jQueryUI
 
 //fügt in eine HTML-Tabelle einen Pager und/oder ein Suchfeld ein
