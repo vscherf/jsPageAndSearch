@@ -1,7 +1,7 @@
 "use strict";
 //written by vs
-//V1.0
 //benötigt html5, jQuery, optional: Bootstrap, jQueryUI
+//V1.1
 
 //fügt in eine HTML-Tabelle einen Pager und/oder ein Suchfeld ein
 //Der Pager kann wahlweise in der Kopf- oder Fusszeile angezeigt werden.
@@ -36,8 +36,9 @@ var DEFAULTS =
         { effect: null },               //weicher Übergang beim Seitenwechsel (für andere Effekte wird ggf. jQueryUI benöigt) - kein Effekt: null | Standard: null
         { showPageInput: true },        //Eingabefeld für Seitenzahl anzeigen (wird nur ausgewertet, wenn 'showNavButtons = true') | Standard: true
         { pageInputClass: null },       //die CSS-Klassen für das Eingabefeld der Seitenzahl (nur aktiv, wenn 'withBootstrap = false') | Standard: null
-        { searchOuput: true },          //soll eine Ausgabe der gefundenen Zeilen angezeigt werden (wird immer in Fußzeile angezeigt) | Standard: trie
+        { searchOuput: true },          //soll eine Ausgabe der gefundenen Zeilen angezeigt werden (wird immer in Fußzeile angezeigt) | Standard: true
         { searchInCols: -1 },           //in welchen Spalten soll gesucht werden (-1 für alle, sonst als String mit Komma getrennt (Bsp: '1,4,6', nicht 0-basierend)) | Standard: -1
+        { excludeCols: -1 },            //in welchen Spalten soll nicht gesucht werden (-1 für alle, sonst als String mit Komma getrennt (Bsp: '1,4,6', nicht 0-basierend)) | Standard: -1
         {
             searcherClass:              //die CSS-Klassen für das Filterfeld | Standard: "tblPageAndSearch-searchfield"
                 "tblPageAndSearch-searchfield"
@@ -89,6 +90,9 @@ var fnPageAndSearch = (function PageAndSearch(properties)
     var td = new $("<td>");                                             //das Tabellenfeld fürs Pagingelement
     var cols = $(table).children("tbody").children("tr:nth-child(1)").children("td").length; //Anzahl der Tabellenspalten
 
+    $(table).children("thead").children("tr.tblPageAndSearch-tr").remove();
+    $(table).children("tfoot").children("tr.tblPageAndSearch-tr").remove();
+
     //wenn die Tabelle gestylt werden soll
     if (fnGetProp(prop, "tableStyle"))
     {
@@ -112,7 +116,7 @@ var fnPageAndSearch = (function PageAndSearch(properties)
     };
 
     //wenn das Pagerelement engezeigt werden soll
-    if (fnGetProp(prop, "showPager"))
+    if ((fnGetProp(prop, "showPager")) && (cols > 0))
     {
         var pagingElement = new $("<div>");                                 //das div-Element, welches die Buttons und das Label enthält
         var label = new $("<label>");                                       //das Labelelement für die Anzeige 'Seite x von y
@@ -343,7 +347,7 @@ var fnPageAndSearch = (function PageAndSearch(properties)
     }
 
     //wenn die Tabellensuche angezeigt werden soll
-    if (fnGetProp(prop, "showSearcher"))
+    if ((fnGetProp(prop, "showSearcher")) && (cols > 0))
     {
         var searcher = new $("<input>");
         tr = new $("<tr>");
@@ -361,6 +365,7 @@ var fnPageAndSearch = (function PageAndSearch(properties)
         };
         var scols = fnGetProp(prop, "searchInCols");
         $(table).data("search-cols", scols);
+        $(table).data("exclude-cols", fnGetProp(prop, "excludeCols"))
         location = $(table).children("thead");
         td.attr("colspan", cols);
         tr.addClass("tblPageAndSearch-tr");
@@ -373,6 +378,7 @@ var fnPageAndSearch = (function PageAndSearch(properties)
         {
             var foot = $(table).children("tfoot");
             var ftr = new $("<tr>");
+            ftr.addClass("tblPageAndSearch-tr");
             var ftd = new $("<td>");
             //auf Fußzeile prüfen und ggf. neu anlegen
             if (foot.length === 0)
@@ -476,8 +482,9 @@ function fnPageTable(pos, sender)
 
 function fnSearchTable(sender, output)
 {
-    var myTable = $(sender).closest("table")
-    var columns = $(myTable).data("search-cols")
+    var myTable = $(sender).closest("table");
+    var columns = $(myTable).data("search-cols");
+    var exclude = $(myTable).data("exclude-cols");
     var cl = fnGetProp(prop, "matchClass");
     var filter = $(sender).val().toUpperCase();
     var rows = $(myTable).children("tbody").children("tr");
@@ -500,6 +507,7 @@ function fnSearchTable(sender, output)
             colCount = $(rows[0]).children("td").length
         } else
         {
+
             for (var j = 0; j < fieldlist.length; j++)
             {
                 var field = $(rows[i]).children("td:nth-child(" + fieldlist[j] + ")");
