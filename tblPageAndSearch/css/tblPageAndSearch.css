@@ -24,7 +24,7 @@ body {
 
 /*das Eingabefeld für den Filter*/
 .tblPageAndSearch-searchfield {
-    background-image: url("/pics/search.png");
+    background-image: url("../pics/search.png");
     background-position: 5px 6px;
     background-repeat: no-repeat;
     width: 100%;
