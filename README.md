@@ -8,5 +8,5 @@ V1.1
 - erneuter Aufruf entfernt bereits vorhandene Pager- und Searcher-Objekte
 
 V1.2
-- includeCols/exludeCols für Angabe der felder in denen gesucht, bzw. die ausgeschlossen werden sollen
+- includeCols/exludeCols für Angabe der Felder in denen gesucht, bzw. die ausgeschlossen werden sollen (Ausschluss hat Vorrang!)
 - zusätzliches Feld für Zähler der Zeilen kann eingefügt werden, mit Angabe der Position
