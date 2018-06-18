@@ -17,6 +17,7 @@
 //fnPageAndSearch([
 //    { tableName: "#myTable" }
 //])
+//ist "exludeCols" gesetzt, dann wird "includeCols" ignoriert (Ausschluss hat immer Vorang)
 
 
 var table
@@ -25,7 +26,7 @@ var DEFAULTS =
     [
         { tableName: '' },              //der Name der Tabelle (im jQuery-Format: '#tableName')
         { tableStyle: true },           //soll die Tabelle zusätzlich gestylt werden | Standard: true
-        { sorting: true },               //Tabelle sortieren | Standard: true
+        { sorting: true },              //Tabelle sortieren | Standard: true
         { withBootstrap: false },       //soll Bootstrap benutzt werden (nur aktiv, wenn 'tableStyle: true') | Standard: false
         { showPager: true },            //soll das Paging-Element angezeigt werden | Standard: true
         { showSearcher: true },         //soll die Tabellensuche angezeigt werden | Standard: true
@@ -38,8 +39,9 @@ var DEFAULTS =
         { showPageInput: true },        //Eingabefeld für Seitenzahl anzeigen (wird nur ausgewertet, wenn 'showNavButtons = true') | Standard: true
         { pageInputClass: null },       //die CSS-Klassen für das Eingabefeld der Seitenzahl (nur aktiv, wenn 'withBootstrap = false') | Standard: null
         { searchOuput: true },          //soll eine Ausgabe der gefundenen Zeilen angezeigt werden (wird immer in Fußzeile angezeigt) | Standard: true
-        { includeCols: -1 },           //in welchen Spalten soll gesucht werden (-1 für alle, sonst als String mit Komma getrennt (Bsp: '1,4,6', nicht 0-basierend)) | Standard: -1
-        { excludeCols: -1 },            //in welchen Spalten soll nicht gesucht werden (-1 für keine Ausnahme, sonst als String mit Komma getrennt (Bsp: '1,4,6', nicht 0-basierend)) | Standard: -1
+        { includeCols: 0 },             //in welchen Spalten soll gesucht werden (-1 für alle, sonst als String mit Komma getrennt (Bsp: '1,4,6', nicht 0-basierend)) | Standard: -1
+        { excludeCols: 0 },             //in welchen Spalten soll nicht gesucht werden (-1 für keine Ausnahme, sonst als String mit Komma getrennt (Bsp: '1,4,6', nicht 0-basierend)) | Standard: -1
+        { counterPos: 0 },              //Position des Zählerfeldes (0: nicht aktiv, 'first': erste Position, 'last': letzte Position, eine Zahl: beliebige Position) - Muss bei includeCols/excludeCols mit beachtet werden!! | Standard: 0
         {
             searcherClass:              //die CSS-Klassen für das Filterfeld | Standard: "tblPageAndSearch-searchfield"
                 "tblPageAndSearch-searchfield"
@@ -80,13 +82,55 @@ var fnPageAndSearch = (function PageAndSearch(properties) {
     table = $(fnGetProp(prop, "tableName"));
     if (!table.length > 0) { return false };                            //wenn keine Tabelle dann nix machen
     var body = $(table).children("tbody");                              //das Bodyelement der Tabelle
+    var head = $(table).children("thead");                              //der Tabellenkopf
     var location;                                                       //wo ist das Pagingelement untergebracht
     var tr = new $("<tr>");                                             //eine neue Zeile fürs Pagingelement
     var td = new $("<td>");                                             //das Tabellenfeld fürs Pagingelement
     var cols = $(table).children("tbody").children("tr:nth-child(1)").children("td").length; //Anzahl der Tabellenspalten
+    var showCounter = fnGetProp(prop, "addCounter");                    //Zählfeld anzeigen
+    var countPos = fnGetProp(prop, "counterPos");
 
     $(table).children("thead").children("tr.tblPageAndSearch-tr").remove();
     $(table).children("tfoot").children("tr.tblPageAndSearch-tr").remove();
+
+    //zuerst das Zählfeld einfügen, wenn erforderlich
+    if (countPos) {
+        cols++;
+        if (!isNaN(countPos)) {
+            if (countPos < 0) { countPos = 1; };
+            if (countPos > $(body).children("tr:first").children("td").length) {
+                countPos = "last";
+            };
+        }
+
+        switch (countPos) {
+            case "first":
+                $(head).children("tr").prepend("<th style='width: 15px;'>Zähler</th>");
+
+                $(body).children("tr").each(function (c, e) {
+                    $(e).prepend("<td>" + parseInt(c + 1) + "</td>");
+                });
+                break;
+
+            case "last":
+                $(head).children("tr").append("<th style='width: 15px;'>Zähler</th>");
+
+                $(body).children("tr").each(function (c, e) {
+                    $(e).append("<td>" + parseInt(c + 1) + "</td>");
+                });
+                break;
+
+            default:
+                if (!isNaN(countPos)) {
+                    $(head).children("tr").children("th:nth-child(" + countPos + ")").before("<th style='width: 15px;'>Zähler</th>");
+
+                    $(body).children("tr").each(function (c, e) {
+                        $(e).children("td:nth-child(" + countPos + ")").before("<td>" + parseInt(c + 1) + "</td>");
+                    });
+                };
+                break;
+        }
+    };
 
     //wenn die Tabelle gestylt werden soll
     if (fnGetProp(prop, "tableStyle")) {
