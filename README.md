@@ -5,7 +5,7 @@ written by vs -
 
 V1.1
 - verwendbar für mehrere Tabellen auf einer Seite
-- erneuter Aufruf entfernt bereits vorhandene Pager- und Searcher-Objekte
+- Bugfix: bereits vorhandene Pager- und Searcher-Objekte werden bei Neuaufruf entfernt
 
 V1.2
 - includeCols/exludeCols für Angabe der Felder in denen gesucht, bzw. die ausgeschlossen werden sollen (Ausschluss hat Vorrang!)
