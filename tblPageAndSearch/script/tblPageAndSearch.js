@@ -1,7 +1,7 @@
 "use strict";
 //written by vs
 //benötigt html5, jQuery, optional: Bootstrap, jQueryUI
-//V1.1
+//V1.2
 
 //fügt in eine HTML-Tabelle einen Pager und/oder ein Suchfeld ein
 //Der Pager kann wahlweise in der Kopf- oder Fusszeile angezeigt werden.
@@ -102,10 +102,11 @@ var fnPageAndSearch = (function PageAndSearch(properties) {
                 countPos = "last";
             };
         }
+        var count_th = "<th style='width: 25px;'></th>";
 
         switch (countPos) {
             case "first":
-                $(head).children("tr").prepend("<th style='width: 15px;'>Zähler</th>");
+                $(head).children("tr").prepend(count_th);
 
                 $(body).children("tr").each(function (c, e) {
                     $(e).prepend("<td>" + parseInt(c + 1) + "</td>");
@@ -113,7 +114,7 @@ var fnPageAndSearch = (function PageAndSearch(properties) {
                 break;
 
             case "last":
-                $(head).children("tr").append("<th style='width: 15px;'>Zähler</th>");
+                $(head).children("tr").append(count_th);
 
                 $(body).children("tr").each(function (c, e) {
                     $(e).append("<td>" + parseInt(c + 1) + "</td>");
@@ -122,7 +123,7 @@ var fnPageAndSearch = (function PageAndSearch(properties) {
 
             default:
                 if (!isNaN(countPos)) {
-                    $(head).children("tr").children("th:nth-child(" + countPos + ")").before("<th style='width: 15px;'>Zähler</th>");
+                    $(head).children("tr").children("th:nth-child(" + countPos + ")").before(count_th);
 
                     $(body).children("tr").each(function (c, e) {
                         $(e).children("td:nth-child(" + countPos + ")").before("<td>" + parseInt(c + 1) + "</td>");
