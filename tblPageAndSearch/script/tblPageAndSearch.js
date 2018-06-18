@@ -1,7 +1,7 @@
 "use strict";
 //written by vs
 //benötigt html5, jQuery, optional: Bootstrap, jQueryUI
-//V1.2
+//V1.1
 
 //fügt in eine HTML-Tabelle einen Pager und/oder ein Suchfeld ein
 //Der Pager kann wahlweise in der Kopf- oder Fusszeile angezeigt werden.
@@ -92,9 +92,10 @@ var fnPageAndSearch = (function PageAndSearch(properties) {
 
     $(table).children("thead").children("tr.tblPageAndSearch-tr").remove();
     $(table).children("tfoot").children("tr.tblPageAndSearch-tr").remove();
+    var cdata = $(table).data("withCounter");
 
     //zuerst das Zählfeld einfügen, wenn erforderlich
-    if (countPos) {
+    if (countPos && (typeof cdata === "undefined")) {
         cols++;
         if (!isNaN(countPos)) {
             if (countPos < 0) { countPos = 1; };
@@ -131,6 +132,8 @@ var fnPageAndSearch = (function PageAndSearch(properties) {
                 };
                 break;
         }
+        //Flag setzen, damit bei manuellem Repaging kein weiteres Feld erscheint
+        $(table).data("withCounter", "1");
     };
 
     //wenn die Tabelle gestylt werden soll
