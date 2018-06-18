@@ -25,6 +25,7 @@ var DEFAULTS =
     [
         { tableName: '' },              //der Name der Tabelle (im jQuery-Format: '#tableName')
         { tableStyle: true },           //soll die Tabelle zusätzlich gestylt werden | Standard: true
+        { sorting: true },               //Tabelle sortieren | Standard: true
         { withBootstrap: false },       //soll Bootstrap benutzt werden (nur aktiv, wenn 'tableStyle: true') | Standard: false
         { showPager: true },            //soll das Paging-Element angezeigt werden | Standard: true
         { showSearcher: true },         //soll die Tabellensuche angezeigt werden | Standard: true
@@ -37,8 +38,8 @@ var DEFAULTS =
         { showPageInput: true },        //Eingabefeld für Seitenzahl anzeigen (wird nur ausgewertet, wenn 'showNavButtons = true') | Standard: true
         { pageInputClass: null },       //die CSS-Klassen für das Eingabefeld der Seitenzahl (nur aktiv, wenn 'withBootstrap = false') | Standard: null
         { searchOuput: true },          //soll eine Ausgabe der gefundenen Zeilen angezeigt werden (wird immer in Fußzeile angezeigt) | Standard: true
-        { searchInCols: -1 },           //in welchen Spalten soll gesucht werden (-1 für alle, sonst als String mit Komma getrennt (Bsp: '1,4,6', nicht 0-basierend)) | Standard: -1
-        { excludeCols: -1 },            //in welchen Spalten soll nicht gesucht werden (-1 für alle, sonst als String mit Komma getrennt (Bsp: '1,4,6', nicht 0-basierend)) | Standard: -1
+        { includeCols: -1 },           //in welchen Spalten soll gesucht werden (-1 für alle, sonst als String mit Komma getrennt (Bsp: '1,4,6', nicht 0-basierend)) | Standard: -1
+        { excludeCols: -1 },            //in welchen Spalten soll nicht gesucht werden (-1 für keine Ausnahme, sonst als String mit Komma getrennt (Bsp: '1,4,6', nicht 0-basierend)) | Standard: -1
         {
             searcherClass:              //die CSS-Klassen für das Filterfeld | Standard: "tblPageAndSearch-searchfield"
                 "tblPageAndSearch-searchfield"
@@ -56,28 +57,22 @@ var DEFAULTS =
 var prop = [];
 var bs = false;           //mit oder ohne Bootstrap
 
-var fnPageAndSearch = (function PageAndSearch(properties)
-{
-    if (typeof properties !== "undefined")
-    {
+var fnPageAndSearch = (function PageAndSearch(properties) {
+    if (typeof properties !== "undefined") {
         prop = properties;
     };
 
     //fehlende Properties mit denen aus den DEFAULTS ergänzen
-    for (var i = 0; i < DEFAULTS.length; i++)
-    {
+    for (var i = 0; i < DEFAULTS.length; i++) {
         var def = Object.keys(DEFAULTS[i])[0];
         var match = false;
-        for (var j = 0; j < prop.length; j++)
-        {
-            if (prop[j].hasOwnProperty(def))
-            {
+        for (var j = 0; j < prop.length; j++) {
+            if (prop[j].hasOwnProperty(def)) {
                 match = true;
                 break;
             }
         }
-        if (!match)
-        {
+        if (!match) {
             prop.push(DEFAULTS[i]);
         }
     }
@@ -94,21 +89,15 @@ var fnPageAndSearch = (function PageAndSearch(properties)
     $(table).children("tfoot").children("tr.tblPageAndSearch-tr").remove();
 
     //wenn die Tabelle gestylt werden soll
-    if (fnGetProp(prop, "tableStyle"))
-    {
-        if (bs)
-        {
+    if (fnGetProp(prop, "tableStyle")) {
+        if (bs) {
             table.addClass("table table-bordered table-condensed table-striped table-hover");
-        } else
-        {
+        } else {
             table.addClass("tblPageAndSearch-table");
-            $(table).children("tbody").children("tr").mousedown(function (event)
-            {
-                if (event.ctrlKey)
-                {
+            $(table).children("tbody").children("tr").mousedown(function (event) {
+                if (event.ctrlKey) {
                     $(this).toggleClass("tblPageAndSearch-tr-select");
-                } else
-                {
+                } else {
                     $(this).toggleClass("tblPageAndSearch-tr-select").siblings().removeClass("tblPageAndSearch-tr-select");
                 }
             })
@@ -116,8 +105,7 @@ var fnPageAndSearch = (function PageAndSearch(properties)
     };
 
     //wenn das Pagerelement engezeigt werden soll
-    if ((fnGetProp(prop, "showPager")) && (cols > 0))
-    {
+    if ((fnGetProp(prop, "showPager")) && (cols > 0)) {
         var pagingElement = new $("<div>");                                 //das div-Element, welches die Buttons und das Label enthält
         var label = new $("<label>");                                       //das Labelelement für die Anzeige 'Seite x von y
         var tblRows = $(body).children("tr").length;                        //Anzahl Zeilen der Tabelle
@@ -126,16 +114,12 @@ var fnPageAndSearch = (function PageAndSearch(properties)
         var btnSize = "";
         var startPage = fnGetProp(prop, "startWithPage");                   //Startseite
 
-        if (startPage === "last")
-        {
+        if (startPage === "last") {
             startPage = parseInt(pageCount - 1);
-        } else if (startPage === "middle")
-        {
+        } else if (startPage === "middle") {
             startPage = parseInt(pageCount / 2);
-        } else
-        {
-            if (isNaN(startPage))
-            {
+        } else {
+            if (isNaN(startPage)) {
                 startPage = 1;
             };
         };
@@ -143,10 +127,8 @@ var fnPageAndSearch = (function PageAndSearch(properties)
         if (startPage < 1) { startPage = 0 };
         if (startPage > parseInt(pageCount - 1)) { startPage = parseInt(pageCount - 1); };
 
-        if (tblRows > rows)
-        {
-            switch (fnGetProp(prop, "buttonSize"))
-            {
+        if (tblRows > rows) {
+            switch (fnGetProp(prop, "buttonSize")) {
                 case "xs":
                     btnSize = "btn-xs";
                     break;
@@ -158,42 +140,34 @@ var fnPageAndSearch = (function PageAndSearch(properties)
                     break;
             };
 
-            if (fnGetProp(prop, "showInFooter"))
-            {
+            if (fnGetProp(prop, "showInFooter")) {
                 location = $(table).children("tfoot");
-                if (location.length === 0)
-                {    //wenn keine Fusszeile, dann eine anlegen
+                if (location.length === 0) {    //wenn keine Fusszeile, dann eine anlegen
                     location = $("<tfoot>");
                     location.appendTo(table);
                     tr.appendTo(location);
-                } else
-                {
+                } else {
                     $(location).children("tr").after(tr);
                 }
                 location = $(table).children("tfoot");
 
-            } else
-            {
+            } else {
                 location = $(table).children("thead");
-                if (location.length === 0)
-                {    //wenn keine Kopfzeile, dann eine anlegen
+                if (location.length === 0) {    //wenn keine Kopfzeile, dann eine anlegen
                     location = $("<thead>");
                     location.appendTo(table);
                     tr.appendTo(location);
-                } else
-                {
+                } else {
                     $(location).children("tr:first-child").before(tr)
                 }
                 location = $(table).children("thead");
             };
 
-            if (bs)
-            {
+            if (bs) {
                 $(pagingElement).addClass("btn-group");
                 $(pagingElement).addClass("tblPageAndSearch-pagediv-bs");
 
-            } else
-            {
+            } else {
                 $(pagingElement).addClass("tblPageAndSearch-pagediv");
             };
             tr.addClass("tblPageAndSearch-tr");
@@ -209,20 +183,16 @@ var fnPageAndSearch = (function PageAndSearch(properties)
 
             var btn;
 
-            if (fnGetProp(prop, "showNavButtons"))
-            {
-                for (var b = 1; b <= 4; b++)
-                {
+            if (fnGetProp(prop, "showNavButtons")) {
+                for (var b = 1; b <= 4; b++) {
                     btn = new $("<input>");
                     btn.prop("type", "button");
                     var title = "";
-                    if (bs)
-                    {
+                    if (bs) {
                         classlist = "btn btn-default " + btnSize;
                     };
                     $(btn).addClass(classlist);
-                    switch (b)
-                    {
+                    switch (b) {
                         case 1:
                             $(btn).val("«");
                             $(btn).data("position", "first");
@@ -246,13 +216,10 @@ var fnPageAndSearch = (function PageAndSearch(properties)
                     };
 
                     $(btn).attr("title", title);
-                    $(btn).mousedown(function (event)
-                    {
-                        if (event.ctrlKey)
-                        {
+                    $(btn).mousedown(function (event) {
+                        if (event.ctrlKey) {
                             $(this).closest("table").children("tbody").children("tr").show();
-                        } else
-                        {
+                        } else {
                             var pos = $(this).data("position");
                             fnPageTable(pos, this);
                         };
@@ -261,8 +228,7 @@ var fnPageAndSearch = (function PageAndSearch(properties)
                     btn.appendTo(pagingElement);
                 }
 
-                if (fnGetProp(prop, "showPageInput"))
-                {
+                if (fnGetProp(prop, "showPageInput")) {
                     var lbl = new $("<label>");
                     lbl.html("Seite");
                     var field = $("<input>");
@@ -271,36 +237,30 @@ var fnPageAndSearch = (function PageAndSearch(properties)
                     field.prop("title", "Seitenzahl");
                     field.addClass("tblPageAndSearch-pageinput")
 
-                    if (bs)
-                    {
+                    if (bs) {
                         field.addClass("form-control");
-                    } else
-                    {
+                    } else {
                         field.addClass(fnGetProp(prop, "pageInputClass"));
                     };
 
                     $(pagingElement).after(field);
                     $(pagingElement).after(lbl);
 
-                    $(field).change(function ()
-                    {
+                    $(field).change(function () {
                         var pos = $(this).val();
                         console.log(pos);
-                        if (!$.isNumeric(pos))
-                        {
+                        if (!$.isNumeric(pos)) {
                             pos = 1;
                         };
 
                         pos = parseInt(pos);
 
-                        if (pos < 1)
-                        {
+                        if (pos < 1) {
                             pos = 1;
                             $(this).val(pos);
                         };
 
-                        if (parseInt(pos + 1) > pageCount)
-                        {
+                        if (parseInt(pos + 1) > pageCount) {
                             $(this).val(pos);
                             pos = parseInt(pageCount);
                         };
@@ -310,28 +270,22 @@ var fnPageAndSearch = (function PageAndSearch(properties)
                     $(label).html("von " + pageCount)
 
                 };
-            } else
-            {
-                for (var p = 0; p < pageCount; p++)
-                {
+            } else {
+                for (var p = 0; p < pageCount; p++) {
                     btn = new $("<input>");
                     btn.prop("type", "button");
                     btn.val(parseInt(p) + 1);
                     var classlist = "";
-                    if (fnGetProp(prop, "withBootstrap"))
-                    {
+                    if (fnGetProp(prop, "withBootstrap")) {
                         classlist = "btn btn-default " + btnSize;
                     };
 
                     $(btn).data("position", p);
-                    $(btn).mousedown(function (event)
-                    {
-                        if (event.ctrlKey)
-                        {
+                    $(btn).mousedown(function (event) {
+                        if (event.ctrlKey) {
                             $(this).closest("table").children("tbody").children("tr").show();
 
-                        } else
-                        {
+                        } else {
                             var pos = $(this).data("position");
                             fnPageTable(pos, this);
                         }
@@ -347,25 +301,21 @@ var fnPageAndSearch = (function PageAndSearch(properties)
     }
 
     //wenn die Tabellensuche angezeigt werden soll
-    if ((fnGetProp(prop, "showSearcher")) && (cols > 0))
-    {
+    if ((fnGetProp(prop, "showSearcher")) && (cols > 0)) {
         var searcher = new $("<input>");
         tr = new $("<tr>");
         td = new $("<td>");
         //auf Kopfzeile prüfen und ggf. neu anlegen
         location = $(table).children("thead");
-        if (location.length === 0)
-        {    //wenn keine Kopfzeile, dann eine anlegen
+        if (location.length === 0) {    //wenn keine Kopfzeile, dann eine anlegen
             location = $("<thead>");
             location.appendTo(table);
             tr.appendTo(location);
-        } else
-        {
+        } else {
             $(location).children("tr:first-child").before(tr)
         };
-        var scols = fnGetProp(prop, "searchInCols");
-        $(table).data("search-cols", scols);
-        $(table).data("exclude-cols", fnGetProp(prop, "excludeCols"))
+        $(table).data("includeCols", fnGetProp(prop, "includeCols"));
+        $(table).data("excludeCols", fnGetProp(prop, "excludeCols"))
         location = $(table).children("thead");
         td.attr("colspan", cols);
         tr.addClass("tblPageAndSearch-tr");
@@ -374,19 +324,16 @@ var fnPageAndSearch = (function PageAndSearch(properties)
         searcher.prop("placeholder", fnGetProp(prop, "searchPlaceholder"));
         var out;
 
-        if (fnGetProp(prop, "searchOuput"))
-        {
+        if (fnGetProp(prop, "searchOuput")) {
             var foot = $(table).children("tfoot");
             var ftr = new $("<tr>");
             ftr.addClass("tblPageAndSearch-tr");
             var ftd = new $("<td>");
             //auf Fußzeile prüfen und ggf. neu anlegen
-            if (foot.length === 0)
-            {    //wenn keine Fusszeile, dann eine anlegen
+            if (foot.length === 0) {    //wenn keine Fusszeile, dann eine anlegen
                 foot = $("<tfoot>");
                 foot.appendTo(table);
-            } else
-            {
+            } else {
                 $(foot).children("tr").after(ftr);
             };
             ftr.appendTo(foot);
@@ -397,18 +344,27 @@ var fnPageAndSearch = (function PageAndSearch(properties)
             out.appendTo(ftd);
         }
 
-        searcher.keyup(function ()
-        {
+        searcher.keyup(function () {
             fnSearchTable(this, out);
         })
         searcher.appendTo(td);
     }
 
+    if (fnGetProp(prop, "sorting")) {
+        $(table).children("thead").children('tr').children("th").addClass("tblPageAndSearch-tr-sort");
+        $(table).children("thead").children("tr").children('th').click(function () {
+            var table = $(this).parents('table').eq(0)
+            var rows = $(table).find('tbody tr').toArray().sort(comparer($(this).index()))
+            this.asc = !this.asc
+            if (!this.asc) { rows = rows.reverse() }
+            for (var i = 0; i < rows.length; i++) { table.append(rows[i]) }
+        })
+
+    }
+
 })
 
-function fnPageTable(pos, sender)
-{
-
+function fnPageTable(pos, sender) {
     var body = $(sender).closest("table").children("tbody");
     var actPage = $(body).data("page");
     var rows = $(body).data("rows");
@@ -417,10 +373,8 @@ function fnPageTable(pos, sender)
     var field = $(sender).closest("td").children("input:text");
     var effect = fnGetProp(prop, "effect");
 
-    if (isNaN(pos))
-    {
-        switch (pos)
-        { //wenn die Anforderung von einer der Navigationsschaltflächen kommt
+    if (isNaN(pos)) {
+        switch (pos) { //wenn die Anforderung von einer der Navigationsschaltflächen kommt
             case "first":
                 actPage = 0;
                 break;
@@ -430,30 +384,25 @@ function fnPageTable(pos, sender)
                 break;
 
             case "prev":
-                if (actPage > 0)
-                {
+                if (actPage > 0) {
                     actPage += -1;
                 }
                 break;
 
             case "next":
-                if (actPage < pages - 1)
-                {
+                if (actPage < pages - 1) {
                     actPage++
                 }
                 break;
         };
-    } else
-    {
+    } else {
         actPage = pos;
     };
 
     //hier jetzt die Anzeige des Labels 'Seite x von y' einstellen
-    if (field.length > 0)
-    {                 // wenn es ein Textfeld gibt
+    if (field.length > 0) {                 // wenn es ein Textfeld gibt
         field.val(parseInt(actPage + 1));   //dann den Wert der aktuellen Seite dort eintragen (+1, da Null-basiernd)
-    } else
-    {                                //ansonsten das Labelelement aktualisieren
+    } else {                                //ansonsten das Labelelement aktualisieren
         var label = $(sender).closest("td").children("div").next("label");
         $(label).html("Seite " + parseInt(actPage + 1) + " von " + pages);
     };
@@ -463,90 +412,99 @@ function fnPageTable(pos, sender)
     start = actPage * rows;
     end = start + rows;
 
-    if (effect !== null)
-    {
+    if (effect !== null) {
         $(body).hide(effect);
-        $(body).promise().done(function ()
-        {
+        $(body).promise().done(function () {
             $(body).children("tr").hide()
             $(body).children("tr").slice(start, end).show();
             $(body).show(effect);
         });
-    } else
-    {
+    } else {
         $(body).children("tr").hide()
         $(body).children("tr").slice(start, end).show();
     }
 
 }
 
-function fnSearchTable(sender, output)
-{
+function fnSearchTable(sender, output) {
     var myTable = $(sender).closest("table");
-    var columns = $(myTable).data("search-cols");
-    var exclude = $(myTable).data("exclude-cols");
+    var include = $(myTable).data("includeCols");
+    var exclude = $(myTable).data("excludeCols");
     var cl = fnGetProp(prop, "matchClass");
     var filter = $(sender).val().toUpperCase();
     var rows = $(myTable).children("tbody").children("tr");
     var intCounter = 0;
-    var fieldlist = "";
+    var inFieldlist = "";
+    var exFieldlist = "";
     var match = false;
 
-    if (parseInt(columns) !== -1)
-    {
-        fieldlist = columns.split(",");
+    if (parseInt(include) > 0) {
+        inFieldlist = include.split(",");
     };
 
-    for (var i = 0; i < rows.length; i++)
-    {
+    if (parseInt(exclude) > 0) {
+        exFieldlist = exclude.split(",");
+    };
+
+    for (var i = 0; i < rows.length; i++) {
         var cols = [];
         var colCount;
-        if (fieldlist.length === 0)
-        {
-            cols = $(rows[i]).children("td")
-            colCount = $(rows[0]).children("td").length
-        } else
-        {
+        //Ausschluss hat Vorrang
+        if (exFieldlist.length > 0) {
+            var exFields = $(rows[i]).children("td");
+            for (var a = 0; a < exFields.length; a++) {
+                for (var e = 0; e < exFieldlist.length; e++) {
+                    if (parseInt(exFieldlist[e]) === parseInt(a + 1)) {
+                        match = true;
+                        break;
+                    };
+                };
+                if (!match) {
+                    var exField = $(rows[i]).children("td:nth-child(" + parseInt(a + 1) + ")");
+                    cols.push(exField);
+                };
+                match = false;
+            }
 
-            for (var j = 0; j < fieldlist.length; j++)
-            {
-                var field = $(rows[i]).children("td:nth-child(" + fieldlist[j] + ")");
-                cols.push(field);
+        } else {
+            if (inFieldlist.length === 0) {
+                cols = $(rows[i]).children("td")
+                colCount = $(rows[0]).children("td").length
+            } else {
+
+                for (var j = 0; j < inFieldlist.length; j++) {
+                    var inField = $(rows[i]).children("td:nth-child(" + inFieldlist[j] + ")");
+                    cols.push(inField);
+                };
+                colCount = inFieldlist.length;
             };
-            colCount = fieldlist.length;
-        };
 
-        for (var f = 0; f < cols.length; f++)
-        {
+        }
+
+        for (var f = 0; f < cols.length; f++) {
             var td = $(cols[f]);
             var html = $(td).html().toUpperCase();
 
-            if (html.indexOf(filter) > -1)
-            {
+            if (html.indexOf(filter) > -1) {
                 match = true;
                 $(td).addClass(cl)
                 intCounter++;
-            } else
-            {
+            } else {
                 $(td).removeClass(cl)
             };
         };
 
-        if (output)
-        {
+        if (output) {
             $(output).html("Treffer in: " + intCounter + " von " + $(rows).children("td").length + " Feldern");
         };
 
-        if (match)
-        {
+        if (match) {
             rows[i].style.display = "";
-        } else
-        {
+        } else {
             rows[i].style.display = "none";
         };
 
-        if (filter.length === 0)
-        {
+        if (filter.length === 0) {
             $(rows).children("td").removeClass(cl);
             $(output).empty();
         };
@@ -554,14 +512,22 @@ function fnSearchTable(sender, output)
     }
 }
 
-function fnGetProp(arr, prop)
-{
-    for (var i = 0; i < arr.length; i++)
-    {
+function fnGetProp(arr, prop) {
+    for (var i = 0; i < arr.length; i++) {
         var p = Object.keys(arr[i])[0];
-        if (p === prop)
-        {
+        if (p === prop) {
             return arr[i][prop];
         }
     }
+}
+
+function comparer(index) {
+    return function (a, b) {
+        var valA = getCellValue(a, index), valB = getCellValue(b, index)
+        return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.toString().localeCompare(valB)
+    }
+}
+
+function getCellValue(row, index) {
+    return $(row).children('td').eq(index).text()
 }
