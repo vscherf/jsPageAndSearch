@@ -39,8 +39,8 @@ var DEFAULTS =
         { showPageInput: true },        //Eingabefeld für Seitenzahl anzeigen (wird nur ausgewertet, wenn 'showNavButtons = true') | Standard: true
         { pageInputClass: null },       //die CSS-Klassen für das Eingabefeld der Seitenzahl (nur aktiv, wenn 'withBootstrap = false') | Standard: null
         { searchOuput: true },          //soll eine Ausgabe der gefundenen Zeilen angezeigt werden (wird immer in Fußzeile angezeigt) | Standard: true
-        { includeCols: 0 },             //in welchen Spalten soll gesucht werden (-1 für alle, sonst als String mit Komma getrennt (Bsp: '1,4,6', nicht 0-basierend)) | Standard: -1
-        { excludeCols: 0 },             //in welchen Spalten soll nicht gesucht werden (-1 für keine Ausnahme, sonst als String mit Komma getrennt (Bsp: '1,4,6', nicht 0-basierend)) | Standard: -1
+        { includeCols: [] },            //in welchen Spalten soll gesucht werden (-1 für alle, sonst als Array mit Komma getrennt (Bsp: [1,4,6], nicht 0-basierend)) | Standard: []
+        { excludeCols: [] },            //in welchen Spalten soll nicht gesucht werden (-1 für keine Ausnahme, sonst als Array mit Komma getrennt (Bsp: [1,4,6], nicht 0-basierend)) | Standard: []
         { counterPos: 0 },              //Position des Zählerfeldes (0: nicht aktiv, 'first': erste Position, 'last': letzte Position, eine Zahl: beliebige Position) - Muss bei includeCols/excludeCols mit beachtet werden!! | Standard: 0
         {
             searcherClass:              //die CSS-Klassen für das Filterfeld | Standard: "tblPageAndSearch-searchfield"
@@ -482,27 +482,17 @@ function fnSearchTable(sender, output) {
     var filter = $(sender).val().toUpperCase();
     var rows = $(myTable).children("tbody").children("tr");
     var intCounter = 0;
-    var inFieldlist = "";
-    var exFieldlist = "";
     var match = false;
-
-    if (parseInt(include) > 0) {
-        inFieldlist = include.split(",");
-    };
-
-    if (parseInt(exclude) > 0) {
-        exFieldlist = exclude.split(",");
-    };
-
+    
     for (var i = 0; i < rows.length; i++) {
         var cols = [];
         var colCount;
         //Ausschluss hat Vorrang
-        if (exFieldlist.length > 0) {
+        if (exclude.length > 0) {
             var exFields = $(rows[i]).children("td");
             for (var a = 0; a < exFields.length; a++) {
-                for (var e = 0; e < exFieldlist.length; e++) {
-                    if (parseInt(exFieldlist[e]) === parseInt(a + 1)) {
+                for (var e = 0; e < exclude.length; e++) {
+                    if (parseInt(exclude[e]) === parseInt(a + 1)) {
                         match = true;
                         break;
                     };
@@ -513,20 +503,18 @@ function fnSearchTable(sender, output) {
                 };
                 match = false;
             }
-
         } else {
-            if (inFieldlist.length === 0) {
+            if (include.length === 0) {
                 cols = $(rows[i]).children("td")
                 colCount = $(rows[0]).children("td").length
             } else {
 
-                for (var j = 0; j < inFieldlist.length; j++) {
-                    var inField = $(rows[i]).children("td:nth-child(" + inFieldlist[j] + ")");
+                for (var j = 0; j < include.length; j++) {
+                    var inField = $(rows[i]).children("td:nth-child(" + include[j] + ")");
                     cols.push(inField);
                 };
-                colCount = inFieldlist.length;
+                colCount = include.length;
             };
-
         }
 
         for (var f = 0; f < cols.length; f++) {
