@@ -12,7 +12,7 @@ V1.2
 - zusätzliches Feld für Zähler der Zeilen kann eingefügt werden, mit Angabe der Position
 
 V1.3
-- Umstellung auf jQuery-Plugin
+- Umstellung auf jQuery-Plugin ( Aufruf mit $("#myTable").PageAndSearch() )
 - Ändern der Hervorhebung des gefundenen Textes, es wird nun der gefundene Text direkt markiert und nicht mehr die ganze Zeile
 - Button für Export kann in Fußzeile eingefügt werden (benötigt separate/eigene Funktion)
 - Änderung/Wegfall einiger Parameter
