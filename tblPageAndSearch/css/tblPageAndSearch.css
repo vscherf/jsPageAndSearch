@@ -8,7 +8,7 @@
     font-style: normal;
 }
 
-html{
+html {
     font-size: 0.67rem;
 }
 
@@ -45,11 +45,12 @@ body {
 .tblPageAndSearch-pagediv {
     float: left;
     margin-right: 10px;
+    margin-top: 8px;
 }
 
     /*die Page-Buttons*/
-    .tblPageAndSearch-pagediv input[type=button] {
-        padding: 8px 15px 8px 15px;
+    .tblPageAndSearch-pagediv a[type=button] {
+        padding: 8px 12px 8px 12px;
         background-color: #f0f0f0;
         color: #333;
         font-size: 1.3rem;
@@ -60,23 +61,24 @@ body {
         cursor: pointer;
     }
 
-        .tblPageAndSearch-pagediv input[type=button]:hover {
+        .tblPageAndSearch-pagediv a[type=button]:hover {
             background-color: #fff;
+            text-decoration: none;
         }
 
-        .tblPageAndSearch-pagediv input[type=button]:active {
+        .tblPageAndSearch-pagediv a[type=button]:active {
             background-color: #999;
         }
 
         /*die letzte Schaltfläche*/
-        .tblPageAndSearch-pagediv input[type=button]:last-child {
+        .tblPageAndSearch-pagediv a[type=button]:last-child {
             border-right: 1px solid #aaa;
             border-bottom-right-radius: 3px;
             border-top-right-radius: 3px;
         }
 
         /*die erste Schaltfläche*/
-        .tblPageAndSearch-pagediv input[type=button]:first-child {
+        .tblPageAndSearch-pagediv a[type=button]:first-child {
             border-bottom-left-radius: 3px;
             border-top-left-radius: 3px;
         }
@@ -140,8 +142,13 @@ body {
     }
 
         .tblPageAndSearch-pagediv-bs + label + input + label {
-            display: inherit;
+            position: absolute;
         }
+
+
+.tblPageAndSearchHideRow {
+    display: none;
+}
 
 /*+++++*/
 
@@ -232,4 +239,26 @@ body {
 .tblPageAndSearch-tr-select {
     background-color: rgba(255, 250, 158, 0.3) !important;
     font-weight: 700;
+}
+
+.tblPageAndSearch-tr-sort:hover {
+    cursor: pointer;
+}
+
+
+/*CSS für Highlight-Funktion*/
+.highlight {
+    background-color: rgb(255, 255, 150);
+    border: 1px solid #aaa;
+    -moz-border-radius: 2px; /* FF1+ */
+    -webkit-border-radius: 2px; /* Saf3-4 */
+    border-radius: 2px; /* Opera 10.5, IE 9, Saf5, Chrome */
+    -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.7); /* FF3.5+ */
+    -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.7); /* Saf3.0+, Chrome */
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.7); /* Opera 10.5+, IE 9.0 */
+}
+
+.highlight {
+    padding: 1px 1px;
+    margin: 0 1px;
 }
