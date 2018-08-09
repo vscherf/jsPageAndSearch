@@ -53,11 +53,6 @@ let DEFAULTS =
 let prop = [];
 let bs = false;           //mit oder ohne Bootstrap
 
-
-jQuery.fn.fnTest = function (props) {
-    alert($(this).prop("id"));
-}
-
 jQuery.fn.PageAndSearch = function (properties) {
     if (typeof properties !== "undefined") {
         prop = properties;
