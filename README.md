@@ -10,3 +10,9 @@ V1.1
 V1.2
 - includeCols/exludeCols für Angabe der Felder in denen gesucht, bzw. die ausgeschlossen werden sollen (Ausschluss hat Vorrang!)
 - zusätzliches Feld für Zähler der Zeilen kann eingefügt werden, mit Angabe der Position
+
+V1.3
+- Umstellung auf Plugin
+- Ändern der Hervorhebung des gefundenen Textes, es wird nun der gefundene Text direkt markiert und nicht mehr die ganze Zeile
+- Button für Export kann in Fußzeile eingefügt werden (benötigt separate/eigene Funktion)
+- Änderung/Wegfall einiger Parameter
