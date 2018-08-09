@@ -53,6 +53,11 @@ let DEFAULTS =
 let prop = [];
 let bs = false;           //mit oder ohne Bootstrap
 
+
+jQuery.fn.fnTest = function (props) {
+    alert($(this).prop("id"));
+}
+
 jQuery.fn.PageAndSearch = function (properties) {
     if (typeof properties !== "undefined") {
         prop = properties;
@@ -550,6 +555,7 @@ function fnSearchTable(sender, output) {
     let match = false;
     let body = $(myTable).children("tbody");
     rows.removeHighlight();
+    rows.css("display", "");
 
     if (parseInt($(myTable).data("include")) > 0) {
         inFieldlist = $(myTable).data("include").toString().split(",");
@@ -618,11 +624,12 @@ function fnSearchTable(sender, output) {
             $(output).empty();
         };
         match = false;
-    }
+    };
 
     if (filter) {
         $(rows).not("tblPageAndSearchHideRow").highlight(filter);
-    }
+    };
+    $(".tblPageAndSearchHideRow").removeClass("tblPageAndSearch-tr-select");
 }
 
 function fnGetProp(arr, prop) {
