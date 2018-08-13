@@ -1,7 +1,7 @@
 "use strict";
 //written by vs
 //benötigt html5, jQuery, optional: Bootstrap, jQueryUI
-//V1.3
+//V1.4
 
 //fügt in eine HTML-Tabelle einen Pager und/oder ein Suchfeld ein
 //Der Pager kann wahlweise in der Kopf- oder Fusszeile angezeigt werden.
@@ -16,6 +16,7 @@
 //Standardmäßig muss nichts übergeben werden, einfach wie folgt aufrufen:
 //$("#myTable").PageAndSearch()
 //ist "exlude" gesetzt, dann wird "include" ignoriert (Ausschluss hat immer Vorang)
+//pas = Präfix für PageAndSearch
 
 let table
 
@@ -38,25 +39,34 @@ let DEFAULTS =
         { include: 0 },                 //in welchen Spalten soll gesucht werden (-1 für alle, sonst als String mit Komma getrennt (Bsp: '1,4,6', nicht 0-basierend)) | Standard: -1
         { exclude: 0 },                 //in welchen Spalten soll nicht gesucht werden (-1 für keine Ausnahme, sonst als String mit Komma getrennt (Bsp: '1,4,6', nicht 0-basierend)) | Standard: -1
         { counterPos: 0 },              //Position des Zählerfeldes (0: nicht aktiv, 'first': erste Position, 'last': letzte Position, eine Zahl: beliebige Position) - Muss bei include/exclude mit beachtet werden!! | Standard: 0
-        { searchOnEnter: false },       //wenn true, dann wird erst nach Betätigung der "Enter"-Taste gesucht, ansonsten wird bei Eingabe jedes Zeichens gesucht (kann bei großen Tabellen zu Verzögerungen führen)
-        { export: true },               //stellt einen Button für eine Exportfunktion zur Verfügung | Standard: true Hinweis! Für die Exportfunktion muss eine eigene Funktion zur Verfügung gestellt werden!
+        { searchOnEnter: false },       //wenn true, dann wird erst nach Betätigung der "Enter"-Taste gesucht (schneller bei großen Tabellen), ansonsten wird bei Eingabe jedes Zeichens gesucht | Standard: false
+        {
+            searcherClass:              //die CSS-Klassen für das Filterfeld | Standard: "pas-searchfield"
+                "pas-searchfield"
+        },
         {
             exportName:                 //der Name der Exportdatei
                 "ExportTable"
         },
         {
-            searcherClass:              //die CSS-Klassen für das Filterfeld | Standard: "tblPageAndSearch-searchfield"
-                "tblPageAndSearch-searchfield"
+            exportFunction:             //die Funktion oder der Aufruf einer Funktion zum Exportieren (stellt automatisch einen ExportButton zur Verfügung), wenn keine Exportfunktion, dann null oder false
+                function (table, ExportName) {
+                    alert("Tabelle wird exportiert nach '" + ExportName + "'"); //nur zur Demonstration
+                    //Hier eine eigene Standardfunktion oder den Aufruf einer Funktion einfügen oder eine eigene Funktion als Parameter übergeben
+                    //Demoaufruf! 
+                    //$(table).table2excel(
+                    //    {
+                    //        exclude: ".noExport, .pas-HideRow, .pas-tr",
+                    //        name: ExportName,
+                    //        filename: "MyApp_" + ExportName
+                    //    })
+
+                }
         }
     ]
 
 let prop = [];
 let bs = false;           //mit oder ohne Bootstrap
-
-
-jQuery.fn.fnTest = function (props) {
-    alert($(this).prop("id"));
-}
 
 jQuery.fn.PageAndSearch = function (properties) {
     if (typeof properties !== "undefined") {
@@ -94,8 +104,8 @@ jQuery.fn.PageAndSearch = function (properties) {
         sPlaceholder = "type text and press <Enter>";
     };
 
-    $(table).children("thead").children("tr.tblPageAndSearch-tr").remove();
-    $(table).children("tfoot").children("tr.tblPageAndSearch-tr").remove();
+    $(table).children("thead").children("tr.pas-tr").remove();
+    $(table).children("tfoot").children("tr.pas-tr").remove();
     let cdata = $(table).data("withCounter");
 
     //zuerst das Zählfeld einfügen, wenn erforderlich
@@ -145,12 +155,12 @@ jQuery.fn.PageAndSearch = function (properties) {
         if (bs) {
             table.addClass("table table-bordered table-condensed table-striped table-hover");
         } else {
-            table.addClass("tblPageAndSearch-table");
+            table.addClass("pas-table");
             $(table).children("tbody").children("tr").mousedown(function (event) {
                 if (event.ctrlKey) {
-                    $(this).toggleClass("tblPageAndSearch-tr-select");
+                    $(this).toggleClass("pas-tr-select");
                 } else {
-                    $(this).toggleClass("tblPageAndSearch-tr-select").siblings().removeClass("tblPageAndSearch-tr-select");
+                    $(this).toggleClass("pas-tr-select").siblings().removeClass("pas-tr-select");
                 }
             })
         }
@@ -217,12 +227,12 @@ jQuery.fn.PageAndSearch = function (properties) {
 
             if (bs) {
                 $(pagingElement).addClass("btn-group");
-                $(pagingElement).addClass("tblPageAndSearch-pagediv-bs");
+                $(pagingElement).addClass("pas-pagediv-bs");
 
             } else {
-                $(pagingElement).addClass("tblPageAndSearch-pagediv");
+                $(pagingElement).addClass("pas-pagediv");
             };
-            tr.addClass("tblPageAndSearch-tr");
+            tr.addClass("pas-tr");
             td.attr("colspan", cols);
             td.appendTo(tr);
             pagingElement.appendTo(td);
@@ -288,7 +298,7 @@ jQuery.fn.PageAndSearch = function (properties) {
                     field.prop("min", 1);
                     field.prop("max", pageCount);
                     field.prop("title", "Seitenzahl\nzum wechseln Seitennummer eingeben und <Enter> drücken\noder mit Pfeiltasten scrollen");
-                    field.addClass("tblPageAndSearch-pageinput")
+                    field.addClass("pas-pageinput")
 
                     if (bs) {
                         field.addClass("form-control");
@@ -407,7 +417,7 @@ jQuery.fn.PageAndSearch = function (properties) {
         $(table).data("exclude", fnGetProp(prop, "exclude"))
         location = $(table).children("thead");
         td.attr("colspan", cols);
-        tr.addClass("tblPageAndSearch-tr");
+        tr.addClass("pas-tr");
         td.appendTo(tr);
         $(searcher).addClass(fnGetProp(prop, "searcherClass"));
         searcher.prop("placeholder", sPlaceholder);
@@ -416,7 +426,7 @@ jQuery.fn.PageAndSearch = function (properties) {
         if (fnGetProp(prop, "searchOuput")) {
             let foot = $(table).children("tfoot");
             let ftr = new $("<tr>");
-            ftr.addClass("tblPageAndSearch-tr");
+            ftr.addClass("pas-tr");
             let ftd = new $("<td>");
             //auf Fußzeile prüfen und ggf. neu anlegen
             if (foot.length === 0) {    //wenn keine Fusszeile, dann eine anlegen
@@ -427,7 +437,7 @@ jQuery.fn.PageAndSearch = function (properties) {
             };
             ftr.appendTo(foot);
             ftd.attr("colspan", cols);
-            tr.addClass("tblPageAndSearch-tr");
+            tr.addClass("pas-tr");
             ftd.appendTo(ftr);
             out = $("<span>");
             out.appendTo(ftd);
@@ -449,12 +459,13 @@ jQuery.fn.PageAndSearch = function (properties) {
     }
 
     //wenn Exportfunktion gewünscht
-    if (fnGetProp(prop, "export")) {
+    var exFn = fnGetProp(prop, "exportFunction");
+    if ($.isFunction(exFn)) {
         let exportname = fnGetProp(prop, "exportName");
         let foot = $(table).children("tfoot");
         if (foot.length > 0) {
             let btnExport = $("<a>");
-            btnExport.attr("id", "btnExportGenList");
+            btnExport.data("table", "#" + $(table).prop("id"));
             btnExport.prop("title", "exportiert die Tabelle\n -um einzelne Zeilen zu exportieren, diese mit STRG+Klick markieren\n -ansonsten wird die Tabelle anhand der Filtereinstellungen exportiert")
             btnExport.attr("href", "#");
             btnExport.attr("type", "button");
@@ -464,14 +475,23 @@ jQuery.fn.PageAndSearch = function (properties) {
             let field = $(foot).children("tr:last-child()").children("td");
             btnExport.prependTo(field);
             btnExport.on("click", function () {
-                fnExportTable(table, exportname);
+                let myTable = $(this).data("table");
+                let exportTable = new $("<table>");
+                exportTable.html($(myTable).html());
+                exportTable.children("tfoot").empty();
+                let rows = $(exportTable).children("tbody").children("tr.pas-tr-select");
+                if (rows.length > 0) {
+                    exportTable.children("tbody").empty();
+                    rows.appendTo(exportTable.children("tbody"));
+                };
+                exFn(exportTable, exportname);
             });
         };
     };
 
     //wenn sortiert werden soll
     if (fnGetProp(prop, "sorting")) {
-        $(table).children("thead").children('tr').children("th").addClass("tblPageAndSearch-tr-sort");
+        $(table).children("thead").children('tr').children("th").addClass("pas-tr-sort");
         $(table).children("thead").children("tr").children('th').click(function () {
             let table = $(this).parents('table').eq(0)
             let rows = $(table).find('tbody tr').toArray().sort(comparer($(this).index()))
@@ -554,6 +574,7 @@ function fnSearchTable(sender, output) {
     let exFieldlist = "";
     let match = false;
     let body = $(myTable).children("tbody");
+    $(body).children("td.hl").removeClass("hl");
     rows.removeHighlight();
     rows.css("display", "");
 
@@ -580,6 +601,7 @@ function fnSearchTable(sender, output) {
                 };
                 if (!match) {
                     let exField = $(rows[i]).children("td:nth-child(" + parseInt(a + 1) + ")");
+                    exField.addClass("hl");
                     cols.push(exField);
                 };
                 match = false;
@@ -587,12 +609,14 @@ function fnSearchTable(sender, output) {
 
         } else {
             if (inFieldlist.length === 0) {
-                cols = $(rows[i]).children("td")
-                colCount = $(rows[0]).children("td").length
+                cols = $(rows[i]).children("td");
+                cols.addClass("hl");
+                colCount = $(rows[0]).children("td").length;
             } else {
 
                 for (let j = 0; j < inFieldlist.length; j++) {
                     let inField = $(rows[i]).children("td:nth-child(" + inFieldlist[j] + ")");
+                    inField.addClass("hl");
                     cols.push(inField);
                 };
                 colCount = inFieldlist.length;
@@ -615,9 +639,9 @@ function fnSearchTable(sender, output) {
         };
 
         if (match) {
-            $(rows[i]).removeClass("tblPageAndSearchHideRow");
+            $(rows[i]).removeClass("pas-HideRow");
         } else {
-            $(rows[i]).addClass("tblPageAndSearchHideRow");
+            $(rows[i]).addClass("pas-HideRow");
         };
 
         if (filter.length === 0) {
@@ -627,9 +651,9 @@ function fnSearchTable(sender, output) {
     };
 
     if (filter) {
-        $(rows).not("tblPageAndSearchHideRow").highlight(filter);
+        $(rows).not("pas-HideRow").children("td.hl").highlight(filter);
     };
-    $(".tblPageAndSearchHideRow").removeClass("tblPageAndSearch-tr-select");
+    $(".pas-HideRow").removeClass("pas-tr-select");
 }
 
 function fnGetProp(arr, prop) {
@@ -662,7 +686,7 @@ jQuery.fn.highlight = function (pat) {
             let pos = node.data.toUpperCase().indexOf(pat);
             if (pos >= 0) {
                 let spannode = document.createElement('span');
-                spannode.className = 'highlight';
+                spannode.className = 'pas-highlight';
                 let middlebit = node.splitText(pos);
                 let endbit = middlebit.splitText(pat.length);
                 let middleclone = middlebit.cloneNode(true);
@@ -704,7 +728,7 @@ jQuery.fn.removeHighlight = function () {
         }
     }
 
-    return this.find("span.highlight").each(function () {
+    return this.find("span.pas-highlight").each(function () {
         let thisParent = this.parentNode;
         thisParent.replaceChild(this.firstChild, this);
         newNormalize(thisParent);
