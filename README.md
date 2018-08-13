@@ -4,6 +4,11 @@ written by vs -
 - markiert gefunden Text
 - benötigt html5, jQuery, optional: Bootstrap, jQueryUI
 
+V1.4
+- Übergabe einer Exportfunktion möglich
+- fehlerhafte Markierung des gefundenen textes gefixt
+- CSS-Klassennamen vereinfacht
+
 V1.3
 - Umstellung auf jQuery-Plugin ( Aufruf mit $("#myTable").PageAndSearch() )
 - Ändern der Hervorhebung des gefundenen Textes, es wird nun der gefundene Text direkt markiert und nicht mehr die ganze Zeile
