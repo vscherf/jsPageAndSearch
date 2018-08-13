@@ -6,7 +6,7 @@
     <script src="../jQuery/jquery-3.2.1.min.js"></script>
     <script src="../jQuery/jquery-ui-1.12.1.min.js"></script>
     <script src="../script/tblPageAndSearch.js"></script>
-    <link href="../Bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <!--<link href="../Bootstrap/bootstrap.min.css" rel="stylesheet" />-->
     <link href="../css/tblPageAndSearch.css" rel="stylesheet" />
     <script>
         $(document).ready(function () {
@@ -20,7 +20,13 @@
 
             $("#tblTest2").PageAndSearch(
                 [
-                    { outputRows: 7 }
+                    { outputRows: 7 },
+                    {
+                        exportFunction:
+                            function (table, ExportName) {
+                                alert("Exportfunktion als Übergabeparameter");
+                            }
+                    }
                 ]
             );
         });
