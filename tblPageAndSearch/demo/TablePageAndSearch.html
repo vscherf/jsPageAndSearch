@@ -1,0 +1,243 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Demo für TablePageAndSearch</title>
+    <link rel="shortcut icon" href="">
+    <script src="../jQuery/jquery-3.2.1.min.js"></script>
+    <script src="../jQuery/jquery-ui-1.12.1.min.js"></script>
+    <script src="../jsPageAndSearch/script/tblPageAndSearch.js"></script>
+    <!--<link href="../Bootstrap/bootstrap.min.css" rel="stylesheet" />-->
+    <link href="../jsPageAndSearch/css/tblPageAndSearch.css" rel="stylesheet" />
+    <script>
+        $(document).ready(function ()
+        {
+
+            $("#tblTest1").PageAndSearch(
+                [
+                    { counterPos: "first" },
+                    { exclude: 1 },
+                ]
+            );
+
+            $("#tblTest2").PageAndSearch(
+                [
+                    { outputRows: 7 },
+                    {
+                        exportFunction:
+                            function (table, ExportName)
+                            {
+                                alert("Exportfunktion als Übergabeparameter");
+                            }
+                    }
+                ]
+            );
+        });
+
+        function fnPageAndSearch()
+        {
+            $("#tblTest1").PageAndSearch(
+                [
+                    { exclude: 1 },
+                    { outputRows: 5 },
+                    { counterPos: "first" },
+                    { showNavButtons: false },
+                    { searchOnEnter: true },
+                ]
+            );
+        };
+    </script>
+</head>
+<body>
+    <button type="button" onclick="fnPageAndSearch()">Page&Search</button>
+    <div style="margin: 20px;">
+        <table id="tblTest1">
+            <caption><strong>Johann Wolfgang von Goethe - Osterspaziergang</strong> (10 Zeilen)</caption>
+            <thead>
+                <tr><th>Text</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        Vom Eise befreit sind Strom und Bäche durch des Frühlings holden, belebenden Blick.
+                    </td>
+                </tr>
+                <tr>
+                    <td>Im Tale grünet Hoffnungsglück.</td>
+                </tr>
+                <tr>
+                    <td>
+                        Der alte Winter in seiner Schwäche zog sich in rauhe Berge zurück.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Von dorther sendet er, fliehend, nur ohnmächtige Schauer körnigen Eises in Streifen über die grünende Flur.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Aber die Sonne duldet kein Weisses.
+                    </td>
+                </tr>
+                <tr>
+                    <td>Überall regt sich Bildung und Streben,</td>
+                </tr>
+                <tr>
+                    <td>alles will sie mit Farbe beleben.</td>
+                </tr>
+                <tr>
+                    <td>
+                        Doch an Blumen fehlts im Revier.
+                    </td>
+                </tr>
+                <tr>
+                    <td>Sie nimmt geputzte Menschen dafür.</td>
+                </tr>
+                <tr>
+                    <td>
+                        Kehre dich um, von diesen Höhen nach der Stadt zurückzusehen!
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Aus dem hohlen, finstern Tor dringt ein buntes Gewimmel hervor.
+                    </td>
+                </tr>
+                <tr>
+                    <td>Jeder sonnt sich heute so gern.</td>
+                </tr>
+                <tr>
+                    <td>
+                        Sie feiern die Auferstehung des Herrn, denn sie sind selber auferstanden.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Aus niedriger Häuser dumpfen Gemächern, aus Handwerks- und Gewerbesbanden,
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        aus dem Druck von Giebeln und Dächern, aus der Strassen quetschender Enge,
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        aus der Kirchen ehrwürdiger Nacht sind sie alle ans Licht gebracht.
+                    </td>
+                </tr>
+                <tr>
+                    <td>Sieh nur, sieh, wie behend sich die Menge</td>
+                </tr>
+                <tr>
+                    <td>durch die Gärten und Felder zerschlägt,</td>
+                </tr>
+                <tr>
+                    <td>wie der Fluss in Breit und Länge</td>
+                </tr>
+                <tr>
+                    <td>so manchen lustigen Nachen bewegt,</td>
+                </tr>
+                <tr>
+                    <td>und, bis zum Sinken überladen,</td>
+                </tr>
+                <tr>
+                    <td>entfernt sich dieser letzte Kahn.</td>
+                </tr>
+                <tr>
+                    <td>Selbst von des Berges ferner Pfaden</td>
+                </tr>
+                <tr>
+                    <td>blinken uns farbige Kleider an.</td>
+                </tr>
+                <tr>
+                    <td>Ich höre schon des Dorfs Getümmel.</td>
+                </tr>
+                <tr>
+                    <td>Hier ist des Volkes wahrer Himmel.</td>
+                </tr>
+                <tr>
+                    <td>Zufrieden jauchzet gross und klein:</td>
+                </tr>
+                <tr>
+                    <td>Hier bin ich Mensch, hier darf ichs sein!</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div style="margin: 20px;">
+        <table id="tblTest2">
+            <caption><strong>Johann Wolfgang von Goethe - Süss, den sprossenden Klee / Wachstum</strong> (7 Zeilen)</caption>
+            <thead>
+                <tr><th>Text</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Johann Wolfgang von Goethe - Süss, den sprossenden Klee</strong></td>
+                </tr>
+                <tr>
+                    <td>Und die Wolle des Lamms tasten mit zärtlicher Hand;</td>
+                </tr>
+                <tr>
+                    <td>Süss, voll Blüten zu sehn die neulebendigen Zweige,</td>
+                </tr>
+                <tr>
+                    <td>Dann das grünende Laub locken mit sehnendem Blick.</td>
+                </tr>
+                <tr>
+                    <td>Aber süsser, mit Blumen dem Busen der Schäferin schmeicheln;</td>
+                </tr>
+                <tr>
+                    <td>Und dies vielfache Glück lässt mich entbehren der Mai.</td>
+                </tr>
+                <tr>
+                    <td>-----</td>
+                </tr>
+                <tr>
+                    <td><strong>Johan Wolfgang von Goethe - Wachstum</strong></td>
+                </tr>
+
+                <tr>
+                    <td>Als kleines artges Kind nach Feld und Auen</td>
+                </tr>
+                <tr>
+                    <td>Sprangts du mit mir, so manchen Frühlingsmorgen.</td>
+                </tr>
+                <tr>
+                    <td>"Für solch ein Töchterchen, mit holden Sorgen, möcht ich als Vater segnend Häuser bauen!"</td>
+                </tr>
+                <tr>
+                    <td>Und als du anfingst, in die Welt zu schauen,</td>
+                </tr>
+                <tr>
+                    <td>War deine Freude häusliches Besorgen.</td>
+                </tr>
+                <tr>
+                    <td>
+                        "Solch eine Schwester! und ich wär geborgen: Wie könnt ich ihr, ach! wie sie mir vertrauen!"
+                    </td>
+                </tr>
+                <tr>
+                    <td>Nun kann den schönen Wachstum nichts beschränken;</td>
+                </tr>
+                <tr>
+                    <td>Ich fühl im Herzen heisses Liebetoben.</td>
+                </tr>
+                <tr>
+                    <td>Umfass ich sie, die Schmerzen zu beschwichtgen?</td>
+                </tr>
+                <tr>
+                    <td>Doch ach! nun muss ich dich als Fürstin denken: </td>
+                </tr>
+                <tr>
+                    <td>Du stehst so schroff vor mir emporgehoben;</td>
+                </tr>
+                <tr>
+                    <td>Ich beuge mich vor deinem Blick, dem flüchtgen.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
